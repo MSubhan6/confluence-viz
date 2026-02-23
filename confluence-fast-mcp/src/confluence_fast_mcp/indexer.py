@@ -85,6 +85,7 @@ class ConfluenceIndexer:
         total_pages = len(pages)
         logger.info(f"Indexing {total_pages} pages...")
         indexed_count = 0
+        batch_size = 5000  # Commit every 5000 pages for large datasets
 
         # Use AsyncWriter for better performance
         writer = AsyncWriter(self.ix)
@@ -95,13 +96,22 @@ class ConfluenceIndexer:
                     self._index_page(writer, space_key, page)
                     indexed_count += 1
 
+                    # Progress reporting
                     if indexed_count % 50 == 0:
                         logger.info(f"Progress: {indexed_count}/{total_pages} pages indexed ({100*indexed_count//total_pages}%)")
+
+                    # Batch commit for large datasets
+                    if indexed_count % batch_size == 0:
+                        logger.info(f"Committing batch of {batch_size} pages to disk...")
+                        writer.commit()
+                        logger.info(f"Batch committed. Continuing indexing...")
+                        writer = AsyncWriter(self.ix)  # New writer for next batch
 
                 except Exception as e:
                     logger.error(f"Error indexing page {page.get('id')}: {e}")
 
-            logger.info("Committing index to disk (this may take 10-30 seconds)...")
+            # Final commit
+            logger.info("Committing final batch to disk...")
             writer.commit()
             logger.info(f"Successfully indexed {indexed_count}/{total_pages} pages")
 
