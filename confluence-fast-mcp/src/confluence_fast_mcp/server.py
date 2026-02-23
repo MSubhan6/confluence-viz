@@ -392,17 +392,15 @@ def initialize_server():
     # Initialize indexer
     indexer = ConfluenceIndexer(config.index_dir)
 
-    # Check if we need to build/rebuild index
+    # Check if index exists
     stats = indexer.get_stats()
     logger.info(f"Index stats: {stats}")
 
     if stats['total_docs'] == 0:
-        logger.info("Index is empty, building index...")
-        all_pages = pickle_loader.get_all_pages()
-        indexed_count = indexer.index_all_pages(all_pages, clear_first=True)
-        logger.info(f"Indexed {indexed_count} pages")
-    else:
-        logger.info(f"Using existing index with {stats['total_docs']} documents")
+        logger.error("Index is empty. Please run 'python3 build_index.py' first.")
+        raise RuntimeError("WHOOSH index not found. Run build_index.py to create it.")
+
+    logger.info(f"Using existing index with {stats['total_docs']} documents")
 
     # Initialize fallback client (if configured)
     if config.confluence_url and config.confluence_username and config.confluence_api_token:
