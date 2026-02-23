@@ -40,7 +40,8 @@ htmlcov/
 # WHOOSH index
 whoosh_index/
 
-# Local config (settings.ini is committed as template, .env is not)
+# Local config
+settings.ini
 .env
 
 # Logs

@@ -21,8 +21,13 @@ pip install fastmcp whoosh beautifulsoup4 lxml pydantic requests python-dateutil
 
 ## Configuration
 
-Edit `settings.ini` if your pickle directory is not `../temp/`:
+Copy the example settings file and edit if needed:
 
+```bash
+cp settings.example.ini settings.ini
+```
+
+Default configuration (works if pickles are in `../temp/`):
 ```ini
 [data]
 pickle_dir = ../temp
