@@ -58,17 +58,17 @@ Add to your MCP settings file:
 {
   "mcpServers": {
     "confluence-fast": {
-      "command": "python3",
+      "command": "/usr/bin/python3",
       "args": ["-m", "confluence_fast_mcp.server"],
       "env": {
-        "PYTHONPATH": "/absolute/path/to/confluence-viz/confluence-fast-mcp/src"
+        "PYTHONPATH": "/home/user/git/confluence-viz/confluence-fast-mcp/src"
       }
     }
   }
 }
 ```
 
-Replace `/absolute/path/to/` with your actual path.
+Update the `PYTHONPATH` to match your actual installation path.
 
 ### 3. Restart Claude Desktop
 
