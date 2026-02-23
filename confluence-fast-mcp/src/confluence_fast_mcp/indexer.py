@@ -101,6 +101,7 @@ class ConfluenceIndexer:
                 except Exception as e:
                     logger.error(f"Error indexing page {page.get('id')}: {e}")
 
+            logger.info("Committing index to disk (this may take 10-30 seconds)...")
             writer.commit()
             logger.info(f"Successfully indexed {indexed_count}/{total_pages} pages")
 
