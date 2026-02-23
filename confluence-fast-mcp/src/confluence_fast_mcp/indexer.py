@@ -82,7 +82,8 @@ class ConfluenceIndexer:
             # Create new empty index
             self.ix = index.create_in(self.index_dir, SCHEMA)
 
-        logger.info(f"Indexing {len(pages)} pages...")
+        total_pages = len(pages)
+        logger.info(f"Indexing {total_pages} pages...")
         indexed_count = 0
 
         # Use AsyncWriter for better performance
@@ -94,14 +95,14 @@ class ConfluenceIndexer:
                     self._index_page(writer, space_key, page)
                     indexed_count += 1
 
-                    if indexed_count % 100 == 0:
-                        logger.debug(f"Indexed {indexed_count} pages...")
+                    if indexed_count % 50 == 0:
+                        logger.info(f"Progress: {indexed_count}/{total_pages} pages indexed ({100*indexed_count//total_pages}%)")
 
                 except Exception as e:
                     logger.error(f"Error indexing page {page.get('id')}: {e}")
 
             writer.commit()
-            logger.info(f"Successfully indexed {indexed_count} pages")
+            logger.info(f"Successfully indexed {indexed_count}/{total_pages} pages")
 
         except Exception as e:
             logger.error(f"Error during indexing: {e}")

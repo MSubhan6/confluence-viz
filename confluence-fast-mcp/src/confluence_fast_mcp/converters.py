@@ -199,15 +199,25 @@ def _convert_tag(tag: Tag, parent_tag: Optional[str] = None) -> Optional[Any]:
 
     # Confluence macros - replace with text
     if tag_name == 'ac:structured-macro':
-        macro_name = tag.get('ac:name', 'unknown')
-        logger.debug(f"Encountered Confluence macro: {macro_name}")
-        return {
-            "type": "paragraph",
-            "content": [{
-                "type": "text",
-                "text": f"[Macro: {macro_name}]"
-            }]
-        }
+        try:
+            macro_name = tag.get('ac:name', 'unknown') if tag else 'unknown'
+            logger.debug(f"Encountered Confluence macro: {macro_name}")
+            return {
+                "type": "paragraph",
+                "content": [{
+                    "type": "text",
+                    "text": f"[Macro: {macro_name}]"
+                }]
+            }
+        except AttributeError as e:
+            logger.warning(f"Error processing macro: {e}")
+            return {
+                "type": "paragraph",
+                "content": [{
+                    "type": "text",
+                    "text": "[Macro: error]"
+                }]
+            }
 
     # Divs and other containers - recurse into children
     if tag_name in ['div', 'section', 'article', 'span']:
